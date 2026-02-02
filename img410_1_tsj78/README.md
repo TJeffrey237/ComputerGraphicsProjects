@@ -22,8 +22,4 @@ Example usage with premade test images:\
 ```./blur examples/test1.ppm output.ppm```
 
 ## Known Issues
-<<<<<<< HEAD
 There are no known issues at this time.
-=======
-There are no known issues at this time.
->>>>>>> 7fe6a318c101bcbe94adbefbc068e3bd26a71d6d
