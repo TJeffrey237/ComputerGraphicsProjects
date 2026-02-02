@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <cstring>
+#include <ctype.h>
+#include "../include/ppm.h"
+
+bool PPMImage::readPPM(const std::string &filename) {
+    FILE* fp = fopen(filename.c_str(), "r");
+    if(fp == NULL) {
+        fprintf(stderr, "Error: File %s could not be opened.\n", filename.c_str());
+        return false;
+    }
+
+    char magic[3];
+    if(fscanf(fp, "%2s", magic) != 1 || strcmp(magic, "P3") != 0) {
+        fprintf(stderr, "Error: File magic number does not match P3.\n");
+        fclose(fp);
+        return false;
+    }
+
+    skipComments(fp);
+    if(fscanf(fp, "%d", &width) != 1) {
+        fprintf(stderr, "Error: Could not read the width.\n");
+        fclose(fp);
+        return false;
+    }
+
+    skipComments(fp);
+    if(fscanf(fp, "%d", &height) != 1) {
+        fprintf(stderr, "Error: Could not read the height.\n");
+        fclose(fp);
+        return false;
+    }
+
+    skipComments(fp);
+    if(fscanf(fp, "%d", &maxColor) != 1) {
+        fprintf(stderr, "Error: Could not read the max color.\n");
+        fclose(fp);
+        return false;
+    }
+
+    pixels.resize(width * height * 3);
+    for(int i = 0; i < width * height * 3; i++) {
+        if(fscanf(fp, "%d", &pixels[i]) != 1) {
+            fprintf(stderr, "Error: Could not read pixel data.\n");
+            fclose(fp);
+            return false;
+        }
+        if(pixels[i] < 0 || pixels[i] > maxColor) {
+        fprintf(stderr, "Error: Pixel value %d at index %d is out of range (0-%d).\n", pixels[i], i, maxColor);
+        fclose(fp);
+        return false;
+    }
+    }
+
+    fclose(fp);
+    return true;
+}
+
+bool PPMImage::writePPM(const std::string &filename) const {
+    FILE* fp = fopen(filename.c_str(), "w");
+    if(fp == NULL) {
+        fprintf(stderr, "Error: Could not open %s for writing.\n", filename.c_str());
+        return false;
+    }
+
+    fprintf(fp, "P3\n");
+    fprintf(fp, "%d %d\n", width, height);
+    fprintf(fp, "%d\n", maxColor);
+
+    for(int i = 0; i < width * height * 3; i += 3) {
+        fprintf(fp, "%d     %d     %d\n", pixels[i], pixels[i + 1], pixels[i + 2]);
+    }
+
+    fclose(fp);
+    return true;
+}
+
+void PPMImage::applyGaussianBlur(const PPMImage &input) {
+    this->width = input.width;
+    this->height = input.height;
+    this->maxColor = input.maxColor;
+    this->pixels.resize(input.pixels.size());
+
+    // kernel from the slides
+    int kernel[3][3] = {
+        {1, 2, 1},
+        {2, 4, 2},
+        {1, 2, 1}
+    };
+
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+            int sumR = 0;
+            int sumG = 0;
+            int sumB = 0;
+            // iterating through the neighborhood
+            for(int ny = -1; ny <= 1; ny++) {
+                for(int nx = -1; nx <= 1; nx++) {
+                    int cx = x + nx;
+                    int cy = y + ny;
+
+                    // clamping for out of bounds neighbors
+                    if(cx < 0) {
+                        cx = 0;
+                    }
+                    if(cx >= width) {
+                        cx = width - 1;
+                    }
+                    if(cy < 0) {
+                        cy = 0;
+                    }
+                    if(cy >= height) {
+                        cy = height - 1;
+                    }
+
+                    int neighbor = (cy * width + cx) * 3;
+                    int weight = kernel[ny + 1][nx + 1];
+
+                    sumR += input.pixels[neighbor] * weight;
+                    sumG += input.pixels[neighbor + 1] * weight;
+                    sumB += input.pixels[neighbor + 2] * weight;
+                }
+            }
+            int target = (y * width + x) * 3;
+            this->pixels[target] = sumR / 16;
+            this->pixels[target + 1] = sumG / 16;
+            this->pixels[target + 2] = sumB / 16;
+        }
+    }
+}
+
+void PPMImage::skipComments(FILE* fp) {
+    int ch;
+    while((ch = fgetc(fp)) != EOF) {
+        if(isspace(ch)) {
+            continue;
+        }
+        else if(ch == '#') {
+            while((ch = fgetc(fp)) != EOF && ch != '\n');
+        }
+        else {
+            ungetc(ch, fp);
+            break;
+        }
+    }
+}
