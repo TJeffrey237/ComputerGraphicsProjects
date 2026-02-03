@@ -1,9 +1,7 @@
-#include <stdio.h>
-#include <cstring>
-#include <ctype.h>
 #include "../include/ppm.h"
 
 bool PPMImage::readPPM(const std::string &filename) {
+    // c_str is used to convert the string to a list of chars
     FILE* fp = fopen(filename.c_str(), "r");
     if(fp == NULL) {
         fprintf(stderr, "Error: File %s could not be opened.\n", filename.c_str());

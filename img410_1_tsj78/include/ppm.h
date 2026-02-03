@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <cstring>
+#include <ctype.h>
 #include <vector>
 #include <string>
 
