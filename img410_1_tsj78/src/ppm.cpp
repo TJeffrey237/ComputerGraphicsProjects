@@ -32,7 +32,7 @@ bool PPMImage::readPPM(const std::string &filename) {
     }
 
     skipComments(fp);
-    if(fscanf(fp, "%d", &maxColor) != 1) {
+    if(fscanf(fp, "%hhu", &maxColor) != 1) {
         fprintf(stderr, "Error: Could not read the max color.\n");
         fclose(fp);
         return false;
@@ -40,13 +40,13 @@ bool PPMImage::readPPM(const std::string &filename) {
 
     pixels.resize(width * height * 3);
     for(int i = 0; i < width * height * 3; i++) {
-        if(fscanf(fp, "%d", &pixels[i]) != 1) {
+        if(fscanf(fp, "%hhu", &pixels[i]) != 1) {
             fprintf(stderr, "Error: Could not read pixel data.\n");
             fclose(fp);
             return false;
         }
         if(pixels[i] < 0 || pixels[i] > maxColor) {
-        fprintf(stderr, "Error: Pixel value %d at index %d is out of range (0-%d).\n", pixels[i], i, maxColor);
+        fprintf(stderr, "Error: Pixel value %hhu at index %hhu is out of range (0-%hhu).\n", pixels[i], i, maxColor);
         fclose(fp);
         return false;
     }

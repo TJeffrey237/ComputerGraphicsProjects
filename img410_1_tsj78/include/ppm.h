@@ -1,6 +1,8 @@
 #ifndef PPM_H
 #define PPM_H
 
+#include <stdint.h>
+#include <stdio.h>
 #include <vector>
 #include <string>
 
@@ -8,8 +10,8 @@ class PPMImage {
 public:
     int width;
     int height;
-    int maxColor;
-    std::vector<int> pixels;
+    uint8_t maxColor;
+    std::vector<uint8_t> pixels;
 
     PPMImage() : width(0), height(0), maxColor(255) {}
 
