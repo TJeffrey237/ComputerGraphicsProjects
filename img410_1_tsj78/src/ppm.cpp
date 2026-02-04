@@ -74,16 +74,23 @@ bool PPMImage::writePPM(const std::string &filename) const {
 }
 
 void PPMImage::applyGaussianBlur(const PPMImage &input) {
+    if(input.width < 5 || input.height < 5) {
+        this->pixels = input.pixels;
+        return;
+    }
+
     this->width = input.width;
     this->height = input.height;
     this->maxColor = input.maxColor;
     this->pixels.resize(input.pixels.size());
 
     // kernel from the slides
-    int kernel[3][3] = {
-        {1, 2, 1},
-        {2, 4, 2},
-        {1, 2, 1}
+    int kernel[5][5] = {
+        {1, 2, 3, 2, 1},
+        {2, 4, 6, 4, 2},
+        {3, 6, 9, 6, 3},
+        {2, 4, 6, 4, 2},
+        {1, 2, 3, 2, 1}
     };
 
     for(int y = 0; y < height; y++) {
@@ -92,8 +99,8 @@ void PPMImage::applyGaussianBlur(const PPMImage &input) {
             int sumG = 0;
             int sumB = 0;
             // iterating through the neighborhood
-            for(int ny = -1; ny <= 1; ny++) {
-                for(int nx = -1; nx <= 1; nx++) {
+            for(int ny = -2; ny <= 2; ny++) {
+                for(int nx = -2; nx <= 2; nx++) {
                     int cx = x + nx;
                     int cy = y + ny;
 
@@ -112,7 +119,7 @@ void PPMImage::applyGaussianBlur(const PPMImage &input) {
                     }
 
                     int neighbor = (cy * width + cx) * 3;
-                    int weight = kernel[ny + 1][nx + 1];
+                    int weight = kernel[ny + 2][nx + 2];
 
                     sumR += input.pixels[neighbor] * weight;
                     sumG += input.pixels[neighbor + 1] * weight;
@@ -120,9 +127,9 @@ void PPMImage::applyGaussianBlur(const PPMImage &input) {
                 }
             }
             int target = (y * width + x) * 3;
-            this->pixels[target] = sumR / 16;
-            this->pixels[target + 1] = sumG / 16;
-            this->pixels[target + 2] = sumB / 16;
+            this->pixels[target] = sumR / 81;
+            this->pixels[target + 1] = sumG / 81;
+            this->pixels[target + 2] = sumB / 81;
         }
     }
 }
