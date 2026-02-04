@@ -20,6 +20,7 @@ The format for running blur.exe is as follows:\
 ```./blur <input_path> <output_path>```\
 Example usage with premade test images:\
 ```./blur examples/test1.ppm output.ppm```
+**NOTE** The examples above were done on windows, please contact me if there are any issues with platforms.
 
 ## Known Issues
 There are no known issues at this time.
