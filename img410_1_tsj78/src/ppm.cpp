@@ -97,18 +97,18 @@ void PPMImage::applyGaussianBlur(const PPMImage &input) {
                     int cx = x + nx;
                     int cy = y + ny;
 
-                    // clamping for out of bounds neighbors
+                    // mirroring for out of bounds neighbors
                     if(cx < 0) {
-                        cx = 0;
+                        cx = -cx;
                     }
-                    if(cx >= width) {
-                        cx = width - 1;
+                    else if(cx >= width) {
+                        cx = 2 * (width - 1) - cx;
                     }
                     if(cy < 0) {
-                        cy = 0;
+                        cy = -cy;
                     }
-                    if(cy >= height) {
-                        cy = height - 1;
+                    else if(cy >= height) {
+                        cy = 2 * (height - 1) - cy;
                     }
 
                     int neighbor = (cy * width + cx) * 3;
