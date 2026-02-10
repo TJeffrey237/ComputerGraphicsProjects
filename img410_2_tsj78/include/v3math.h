@@ -1,7 +1,9 @@
 #ifndef V3MATH_H
 #define V3MATH_H
 
+#include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 
 void v3_from_points(float *dst, float *a, float *b); // form v3 from a to b
 

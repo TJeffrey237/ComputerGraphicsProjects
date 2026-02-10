@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "v3math.h"
 
 // helper function
@@ -32,11 +31,11 @@ void test_v3_add() {
         {100.1f, 200.2f, 300.3f}
     };
 
-    for (int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++) {
         float actual[3];
         v3_add(actual, inputs_a[i], inputs_b[i]);
         printf("Test %d: ", i + 1);
-        if (v3_equals(actual, expected[i], 0.001f)) {
+        if(v3_equals(actual, expected[i], 0.001f)) {
             printf("PASS\n");
         } 
         else {
@@ -79,11 +78,11 @@ void test_v3_subtract() {
         {0.0f, 0.0f, 0.0f},
     };
 
-    for (int i = 0; i < 3; i++) {
+    for(int i = 0; i < 3; i++) {
         float actual[3];
         v3_subtract(actual, inputs_a[i], inputs_b[i]);
         printf("Test %d: ", i + 1);
-        if (v3_equals(actual, expected[i], 0.001f)) {
+        if(v3_equals(actual, expected[i], 0.001f)) {
             printf("PASS\n");
         } 
         else {
@@ -108,7 +107,42 @@ void test_v3_subtract() {
 }
 
 void test_v3_dot_product() {
-    // code
+    printf("--- Testing v3_dot_product ---\n");
+
+    float inputs_a[3][3] = {
+        {1.0f, 0.0f, 0.0f},
+        {2.0f, 0.0f, 0.0f},
+        {1.0f, 1.5f, 1.5f},
+    };
+    float inputs_b[3][3] = {
+        {0.0f, 1.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
+        {-1.0f, 0.0f, 0.0f},
+    };
+    float expected[3] = {
+        0.0f, 2.0f, -1.0f
+    };
+
+    for(int i = 0; i < 3; i++) {
+        float actual = v3_dot_product(inputs_a[i], inputs_b[i]);
+        printf("Test %d: ", i + 1);
+        if(fabsf(actual - expected[i]) <= 0.001f) {
+            printf("PASS\n");
+        } 
+        else {
+            printf("FAIL:\n");
+            printf("\tInput A: "); 
+            v3_print(inputs_a[i]); 
+            printf("\n");
+
+            printf("\tInput B: ");
+            v3_print(inputs_b[i]);
+            printf("\n");
+
+            printf("\tExpected: %f\n", expected[i]);
+            printf("\tActual: %f\n", actual);
+        }
+    }
 }
 
 void test_v3_cross_product() {
@@ -142,5 +176,6 @@ void test_v3_normalize() {
 int main() {
     test_v3_add();
     test_v3_subtract();
+    test_v3_dot_product();
     return 0;
 }
