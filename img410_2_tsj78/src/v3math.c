@@ -43,7 +43,10 @@ void v3_scale(float *dst, float s) {
 }
 
 float v3_angle(float *a, float *b) {
-    // code
+    float dot = v3_dot_product(a, b);
+    float magA = v3_length(a);
+    float magB = v3_length(b);
+    return acos(dot / (magA * magB));
 }
 
 float v3_angle_quick(float *a, float *b) {
@@ -55,7 +58,10 @@ void v3_reflect(float *dst, float *v, float *n) {
 }
 
 float v3_length(float *a) {
-    // code
+    float x = a[0] * a[0];
+    float y = a[1] * a[1];
+    float z = a[2] * a[2];
+    return sqrt(x + y + z);
 }
 
 void v3_normalize(float *dst, float *a) {
