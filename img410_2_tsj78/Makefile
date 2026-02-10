@@ -11,14 +11,14 @@ TARGET = v3test
 
 all: $(TARGET)
 
-$(TARGET): $(BUILD_DIR)/v3math.o $(BUILD_DIR)/v3test.o
+$(TARGET): $(BUILD_DIR)/v3math.o $(BUILD_DIR)/v3tests.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
 $(BUILD_DIR)/v3math.o: $(SRC_DIR)/v3math.c $(INC_DIR)/v3math.h
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/v3test.o: $(TEST_DIR)/v3test.c $(INC_DIR)/v3math.h
+$(BUILD_DIR)/v3tests.o: $(TEST_DIR)/v3tests.c $(INC_DIR)/v3math.h
 	@mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
