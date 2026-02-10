@@ -10,7 +10,7 @@ void test_v3_from_points() {
 }
 
 void test_v3_add() {
-    printf("--- Testing v3_add ---\n");
+    printf("\n--- Testing v3_add ---\n");
 
     float inputs_a[4][3] = {
         {1.0f, 2.0f, 3.0f},
@@ -60,7 +60,7 @@ void test_v3_add() {
 }
 
 void test_v3_subtract() {
-    printf("--- Testing v3_subtract ---\n");
+    printf("\n--- Testing v3_subtract ---\n");
 
     float inputs_a[3][3] = {
         {10.0f, 10.0f, 10.0f},
@@ -107,7 +107,7 @@ void test_v3_subtract() {
 }
 
 void test_v3_dot_product() {
-    printf("--- Testing v3_dot_product ---\n");
+    printf("\n--- Testing v3_dot_product ---\n");
 
     float inputs_a[3][3] = {
         {1.0f, 0.0f, 0.0f},
@@ -146,7 +146,7 @@ void test_v3_dot_product() {
 }
 
 void test_v3_cross_product() {
-    printf("--- Testing v3_cross_product ---\n");
+    printf("\n--- Testing v3_cross_product ---\n");
 
     float inputs_a[3][3] = {
         {1.0f, 0.0f, 0.0f},
@@ -193,11 +193,86 @@ void test_v3_cross_product() {
 }
 
 void test_v3_scale() {
-    // code
+    printf("\n--- Testing v3_scale ---\n");
+
+    float inputs_a[3][3] = {
+        {1.0f, 2.0f, 3.0f},
+        {5.0f, 5.0f, 5.0f},
+        {1.0f, -1.0f, 0.0f},
+    };
+    float inputs_s[3] = {
+        2.0f, 0.0f, -1.0f
+    };
+    float expected[3][3] = {
+        {2.0f, 4.0f, 6.0f},
+        {0.0f, 0.0f, 0.0f},
+        {-1.0f, 1.0f, 0.0f},
+    };
+
+    for(int i = 0; i < 3; i++) {
+        float actual[3];
+        actual[0] = inputs_a[i][0];
+        actual[1] = inputs_a[i][1];
+        actual[2] = inputs_a[i][2];
+        v3_scale(actual, inputs_s[i]);
+        printf("Test %d: ", i + 1);
+        if(v3_equals(actual, expected[i], 0.001f)) {
+            printf("PASS\n");
+        } 
+        else {
+            printf("FAIL:\n");
+            printf("\tInput A: "); 
+            v3_print(inputs_a[i]); 
+            printf("\n");
+
+            printf("\tExpected: ");
+            v3_print(expected[i]);
+            printf("\n");
+
+            printf("\tActual: ");
+            v3_print(actual);
+            printf("\n");
+        }
+    }
 }
 
 void test_v3_angle() {
-    // code
+    printf("\n--- Testing v3_angle ---\n");
+
+    float inputs_a[3][3] = {
+        {1.0f, 0.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
+    };
+    float inputs_b[3][3] = {
+        {0.0f, 1.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
+        {-1.0f, 0.0f, 0.0f},
+    };
+    float expected[3] = {
+        1.57079f, 0.0f, 3.14159f
+    };
+
+    for(int i = 0; i < 3; i++) {
+        float actual = v3_angle(inputs_a[i], inputs_b[i]);
+        printf("Test %d: ", i + 1);
+        if(fabsf(actual - expected[i]) <= 0.001f) {
+            printf("PASS\n");
+        } 
+        else {
+            printf("FAIL:\n");
+            printf("\tInput A: "); 
+            v3_print(inputs_a[i]); 
+            printf("\n");
+
+            printf("\tInput B: ");
+            v3_print(inputs_b[i]);
+            printf("\n");
+
+            printf("\tExpected: %f\n", expected[i]);
+            printf("\tActual: %f\n", actual);
+        }
+    }
 }
 
 void test_v3_angle_quick() {
@@ -205,11 +280,54 @@ void test_v3_angle_quick() {
 }
 
 void test_v3_reflect() {
-    // code
+    printf("\n--- Testing v3_reflect ---\n");
+
+    float inputs_a[3][3] = {
+        {1.0f, -1.0f, 0.0f},
+        {0.0f, -1.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
+    };
+    float inputs_b[3][3] = {
+        {0.0f, 1.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f},
+    };
+    float expected[3][3] = {
+        {1.0f, 1.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
+    };
+
+    for(int i = 0; i < 3; i++) {
+        float actual[3];
+        v3_reflect(actual, inputs_a[i], inputs_b[i]);
+        printf("Test %d: ", i + 1);
+        if(v3_equals(actual, expected[i], 0.001f)) {
+            printf("PASS\n");
+        } 
+        else {
+            printf("FAIL:\n");
+            printf("\tInput A: "); 
+            v3_print(inputs_a[i]); 
+            printf("\n");
+
+            printf("\tInput B: ");
+            v3_print(inputs_b[i]);
+            printf("\n");
+
+            printf("\tExpected: ");
+            v3_print(expected[i]);
+            printf("\n");
+
+            printf("\tActual: ");
+            v3_print(actual);
+            printf("\n");
+        }
+    }
 }
 
 void test_v3_length() {
-    printf("--- Testing v3_length ---\n");
+    printf("\n--- Testing v3_length ---\n");
 
     float inputs_a[3][3] = {
         {3.0f, 4.0f, 0.0f},
@@ -239,7 +357,7 @@ void test_v3_length() {
 }
 
 void test_v3_normalize() {
-    printf("--- Testing v3_normalize ---\n");
+    printf("\n--- Testing v3_normalize ---\n");
 
     float inputs_a[3][3] = {
         {5.0f, 0.0f, 0.0f},
@@ -281,7 +399,9 @@ int main() {
     test_v3_subtract();
     test_v3_dot_product();
     test_v3_cross_product();
-
+    test_v3_scale();
+    test_v3_angle();
+    test_v3_reflect();
     test_v3_length();
     test_v3_normalize();
 
