@@ -28,11 +28,18 @@ float v3_dot_product(float *a, float *b) {
 }
 
 void v3_cross_product(float *dst, float *a, float *b) {
-    // code
+    float i = (a[1] * b[2]) - (a[2] * b[1]);
+    float j = -((a[0] * b[2]) - (a[2] * b[0]));
+    float k = (a[0] * b[1]) - (a[1] * b[0]);
+    dst[0] = i;
+    dst[1] = j;
+    dst[2] = k;
 }
 
 void v3_scale(float *dst, float s) {
-    // code
+    dst[0] = dst[0] * s;
+    dst[1] = dst[1] * s;
+    dst[2] = dst[2] * s;
 }
 
 float v3_angle(float *a, float *b) {
