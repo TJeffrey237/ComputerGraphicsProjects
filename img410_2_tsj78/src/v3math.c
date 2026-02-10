@@ -5,7 +5,9 @@
 #include "v3math.h"
 
 void v3_from_points(float *dst, float *a, float *b) {
-    // code
+    dst[0] = b[0] - a[0];
+    dst[1] = b[1] - a[1];
+    dst[2] = b[2] - a[2];
 }
 
 void v3_add(float *dst, float *a, float *b) {
@@ -50,11 +52,20 @@ float v3_angle(float *a, float *b) {
 }
 
 float v3_angle_quick(float *a, float *b) {
-    // code
+    float dot = v3_dot_product(a, b);
+    float magA = v3_length(a);
+    float magB = v3_length(b);
+    return dot / (magA * magB);
 }
 
 void v3_reflect(float *dst, float *v, float *n) {
-    // code
+    float dot = v3_dot_product(v, n);
+    v3_scale(n, dot);
+    v3_scale(n, 2);
+    v3_subtract(v, n);
+    dst[0] = v[0];
+    dst[1] = v[1];
+    dst[2] = v[2];
 }
 
 float v3_length(float *a) {
@@ -65,9 +76,21 @@ float v3_length(float *a) {
 }
 
 void v3_normalize(float *dst, float *a) {
-    // code
+    float mag = v3_length(a);
+    dst[0] = a[0] / mag;
+    dst[1] = a[1] / mag;
+    dst[2] = a[2] / mag;
 }
 
 bool v3_equals(float *a, float *b, float tolerance) {
-    // code
+    if((a[0] - b[0]) > tolerance) {
+        return false;
+    }
+    if((a[0] - b[0]) > tolerance) {
+        return false;
+    }
+    if((a[0] - b[0]) > tolerance) {
+        return false;
+    }
+    return true;
 }
