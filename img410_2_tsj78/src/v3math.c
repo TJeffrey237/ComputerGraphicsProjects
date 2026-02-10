@@ -17,9 +17,9 @@ void v3_add(float *dst, float *a, float *b) {
 }
 
 void v3_subtract(float *dst, float *a, float *b) {
-    dst[0] = a[0] + b[0];
-    dst[1] = a[1] + b[1];
-    dst[2] = a[2] + b[2]; 
+    dst[0] = a[0] - b[0];
+    dst[1] = a[1] - b[1];
+    dst[2] = a[2] - b[2]; 
 }
 
 float v3_dot_product(float *a, float *b) {
@@ -48,6 +48,9 @@ float v3_angle(float *a, float *b) {
     float dot = v3_dot_product(a, b);
     float magA = v3_length(a);
     float magB = v3_length(b);
+    if(magA == 0 || magB == 0) {
+        fprintf(stderr, "Error: One of the vectors used has a magnitude of 0.");
+    }
     return acos(dot / (magA * magB));
 }
 
@@ -55,17 +58,21 @@ float v3_angle_quick(float *a, float *b) {
     float dot = v3_dot_product(a, b);
     float magA = v3_length(a);
     float magB = v3_length(b);
+    if(magA == 0 || magB == 0) {
+        fprintf(stderr, "Error: One of the vectors used has a magnitude of 0.");
+    }
     return dot / (magA * magB);
 }
 
 void v3_reflect(float *dst, float *v, float *n) {
     float dot = v3_dot_product(v, n);
-    v3_scale(n, dot);
-    v3_scale(n, 2);
-    v3_subtract(v, n);
-    dst[0] = v[0];
-    dst[1] = v[1];
-    dst[2] = v[2];
+    float scalar = 2.0f * dot;
+    float x = v[0] - (scalar * n[0]);
+    float y = v[1] - (scalar * n[1]);
+    float z = v[2] - (scalar * n[2]);
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
 }
 
 float v3_length(float *a) {
@@ -77,19 +84,22 @@ float v3_length(float *a) {
 
 void v3_normalize(float *dst, float *a) {
     float mag = v3_length(a);
+    if(mag == 0) {
+        fprintf(stderr, "Error: The vector used for normalization has a magnitude of 0.");
+    }
     dst[0] = a[0] / mag;
     dst[1] = a[1] / mag;
     dst[2] = a[2] / mag;
 }
 
 bool v3_equals(float *a, float *b, float tolerance) {
-    if((a[0] - b[0]) > tolerance) {
+    if(fabsf(a[0] - b[0]) > tolerance) {
         return false;
     }
-    if((a[0] - b[0]) > tolerance) {
+    if(fabsf(a[1] - b[1]) > tolerance) {
         return false;
     }
-    if((a[0] - b[0]) > tolerance) {
+    if(fabsf(a[2] - b[2]) > tolerance) {
         return false;
     }
     return true;
