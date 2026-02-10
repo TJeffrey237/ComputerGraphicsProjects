@@ -1,18 +1,26 @@
-CXX = g++
-CXXFLAGS = -Wall -g -std=c++11 -Iinclude
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -Iinclude
+LIBS = -lm
 
 SRC_DIR = src
+INC_DIR = include
+TEST_DIR = tests
 BUILD_DIR = build
-TARGET = blur
 
-OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/ppm.o
+TARGET = v3test
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+all: $(TARGET)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(TARGET): $(BUILD_DIR)/v3math.o $(BUILD_DIR)/v3test.o
+	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
+
+$(BUILD_DIR)/v3math.o: $(SRC_DIR)/v3math.c $(INC_DIR)/v3math.h
 	@mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/v3test.o: $(TEST_DIR)/v3test.c $(INC_DIR)/v3math.h
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
