@@ -209,11 +209,71 @@ void test_v3_reflect() {
 }
 
 void test_v3_length() {
-    // code
+    printf("--- Testing v3_length ---\n");
+
+    float inputs_a[3][3] = {
+        {3.0f, 4.0f, 0.0f},
+        {1.0f, 1.0f, 1.0f},
+        {3.0f, 2.0f, -1.0f},
+    };
+    float expected[3] = {
+        5.0f, 1.73205f, 3.74166f
+    };
+
+    for(int i = 0; i < 3; i++) {
+        float actual = v3_length(inputs_a[i]);
+        printf("Test %d: ", i + 1);
+        if(fabsf(actual - expected[i]) <= 0.001f) {
+            printf("PASS\n");
+        } 
+        else {
+            printf("FAIL:\n");
+            printf("\tInput A: "); 
+            v3_print(inputs_a[i]); 
+            printf("\n");
+
+            printf("\tExpected: %f\n", expected[i]);
+            printf("\tActual: %f\n", actual);
+        }
+    }
 }
 
 void test_v3_normalize() {
-    // code
+    printf("--- Testing v3_normalize ---\n");
+
+    float inputs_a[3][3] = {
+        {5.0f, 0.0f, 0.0f},
+        {1.0f, 1.0f, 1.0f},
+        {1.0f, 2.0f, 3.0f},
+    };
+    float expected[3][3] = {
+        {1.0f, 0.0f, 0.0f},
+        {0.57735f, 0.57735f, 0.57735f},
+        {0.26726f, 0.53452f, 0.80178f},
+    };
+
+    for(int i = 0; i < 3; i++) {
+        float actual[3];
+        v3_normalize(actual, inputs_a[i]);
+        printf("Test %d: ", i + 1);
+        if(v3_equals(actual, expected[i], 0.001f)) {
+            printf("PASS\n");
+        } 
+        else {
+            printf("FAIL:\n");
+            printf("\tInput A: "); 
+            v3_print(inputs_a[i]); 
+            printf("\n");
+
+            printf("\tExpected: ");
+            v3_print(expected[i]);
+            printf("\n");
+
+            printf("\tActual: ");
+            v3_print(actual);
+            printf("\n");
+        }
+    }
 }
 
 int main() {
@@ -221,5 +281,9 @@ int main() {
     test_v3_subtract();
     test_v3_dot_product();
     test_v3_cross_product();
+
+    test_v3_length();
+    test_v3_normalize();
+
     return 0;
 }
