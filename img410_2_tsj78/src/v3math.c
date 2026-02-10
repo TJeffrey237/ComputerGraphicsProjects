@@ -26,12 +26,12 @@ float v3_dot_product(float *a, float *b) {
 }
 
 void v3_cross_product(float *dst, float *a, float *b) {
-    float i = (a[1] * b[2]) - (a[2] * b[1]);
-    float j = -((a[0] * b[2]) - (a[2] * b[0]));
-    float k = (a[0] * b[1]) - (a[1] * b[0]);
-    dst[0] = i;
-    dst[1] = j;
-    dst[2] = k;
+    float x = (a[1] * b[2]) - (a[2] * b[1]);
+    float y = (a[2] * b[0]) - (a[0] * b[2]);
+    float z = (a[0] * b[1]) - (a[1] * b[0]);
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
 }
 
 void v3_scale(float *dst, float s) {

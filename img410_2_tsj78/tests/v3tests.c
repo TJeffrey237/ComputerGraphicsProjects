@@ -146,7 +146,50 @@ void test_v3_dot_product() {
 }
 
 void test_v3_cross_product() {
-    // code
+    printf("--- Testing v3_cross_product ---\n");
+
+    float inputs_a[3][3] = {
+        {1.0f, 0.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f},
+        {1.0f, 2.0f, 3.0f},
+    };
+    float inputs_b[3][3] = {
+        {0.0f, 1.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f},
+        {1.0f, 2.0f, 3.0f},
+    };
+    float expected[3][3] = {
+        {0.0f, 0.0f, 1.0f},
+        {0.0f, 0.0f, -1.0f},
+        {0.0f, 0.0f, 0.0f},
+    };
+
+    for(int i = 0; i < 3; i++) {
+        float actual[3];
+        v3_cross_product(actual, inputs_a[i], inputs_b[i]);
+        printf("Test %d: ", i + 1);
+        if(v3_equals(actual, expected[i], 0.001f)) {
+            printf("PASS\n");
+        } 
+        else {
+            printf("FAIL:\n");
+            printf("\tInput A: "); 
+            v3_print(inputs_a[i]); 
+            printf("\n");
+
+            printf("\tInput B: ");
+            v3_print(inputs_b[i]);
+            printf("\n");
+
+            printf("\tExpected: ");
+            v3_print(expected[i]);
+            printf("\n");
+
+            printf("\tActual: ");
+            v3_print(actual);
+            printf("\n");
+        }
+    }
 }
 
 void test_v3_scale() {
@@ -177,5 +220,6 @@ int main() {
     test_v3_add();
     test_v3_subtract();
     test_v3_dot_product();
+    test_v3_cross_product();
     return 0;
 }
