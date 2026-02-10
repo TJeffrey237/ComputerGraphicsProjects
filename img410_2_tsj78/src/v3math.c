@@ -52,7 +52,7 @@ float v3_angle(float *a, float *b) {
         fprintf(stderr, "Error: One of the vectors used has a magnitude of 0.\n");
         return 0.0f;
     }
-    // clamping
+    // clamping due to potential rounding errors
     float cos_theta = dot / (magA * magB);
     if(cos_theta > 1.0f) {
         cos_theta = 1.0f;
@@ -98,9 +98,12 @@ void v3_normalize(float *dst, float *a) {
         fprintf(stderr, "Error: The vector used for normalization has a magnitude of 0.\n");
         return;
     }
-    dst[0] = a[0] / mag;
-    dst[1] = a[1] / mag;
-    dst[2] = a[2] / mag;
+    float x = a[0] / mag;
+    float y = a[1] / mag;
+    float z = a[2] / mag;
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
 }
 
 bool v3_equals(float *a, float *b, float tolerance) {
