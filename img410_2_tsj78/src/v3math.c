@@ -48,8 +48,9 @@ float v3_angle(float *a, float *b) {
     float dot = v3_dot_product(a, b);
     float magA = v3_length(a);
     float magB = v3_length(b);
-    if(magA == 0 || magB == 0) {
+    if(magA == 0.0f || magB == 0.0f) {
         fprintf(stderr, "Error: One of the vectors used has a magnitude of 0.");
+        return 0.0f;
     }
     return acos(dot / (magA * magB));
 }
@@ -58,8 +59,9 @@ float v3_angle_quick(float *a, float *b) {
     float dot = v3_dot_product(a, b);
     float magA = v3_length(a);
     float magB = v3_length(b);
-    if(magA == 0 || magB == 0) {
+    if(magA == 0.0f || magB == 0.0f) {
         fprintf(stderr, "Error: One of the vectors used has a magnitude of 0.");
+        return 0.0f;
     }
     return dot / (magA * magB);
 }
@@ -84,8 +86,9 @@ float v3_length(float *a) {
 
 void v3_normalize(float *dst, float *a) {
     float mag = v3_length(a);
-    if(mag == 0) {
+    if(mag == 0.0f) {
         fprintf(stderr, "Error: The vector used for normalization has a magnitude of 0.");
+        return;
     }
     dst[0] = a[0] / mag;
     dst[1] = a[1] / mag;
