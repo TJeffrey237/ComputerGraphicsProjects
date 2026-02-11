@@ -17,10 +17,8 @@ This will create the v3test executable inside the root directory. To remove buil
 ```make clean```
 ### Running The Executable
 Ensure you are still inside the root directory (img410_2_tsj78)
-The format for running blur.exe is as follows:\
+The format for running v3test.exe is as follows:\
 ```./v3test```\
-Example usage with premade test images:\
-```./blur examples/test1.ppm output.ppm```
 **NOTE** The examples above were done on windows, please contact me if there are any issues with platforms.
 
 ## Known Issues
