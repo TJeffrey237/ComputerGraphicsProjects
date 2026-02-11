@@ -272,7 +272,7 @@ void test_v3_angle() {
             printf("\tExpected: %f\n", expected[i]);
             printf("\tActual: %f\n", actual);
         }
-    }
+    } 
 }
 
 void test_v3_angle_quick() {
