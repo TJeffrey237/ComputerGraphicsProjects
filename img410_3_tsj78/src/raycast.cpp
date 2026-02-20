@@ -5,6 +5,8 @@
 
 int main(int argc, char **argv) {
     // STEP 1: READ SCENE FILE
+    
+
     // STEP 2: ITERATE THROUGH OBJECTS FOR INTERSECTIONS
     // STEP 3: WRITE TO PPM FILE
 }
