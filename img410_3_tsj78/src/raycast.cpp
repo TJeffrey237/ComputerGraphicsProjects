@@ -18,6 +18,11 @@ int main(int argc, char **argv) {
     char* input_scene = argv[3];
     char* output_ppm = argv[4];
 
+    PPMImage outputImage;
+    outputImage.width = img_width;
+    outputImage.height = img_height;
+    outputImage.maxColor = 255;
+
     if(img_width <= 0 || img_height <= 0) {
         fprintf(stderr, "Error: Invalid image dimensions.\n");
         return 1;
@@ -32,9 +37,13 @@ int main(int argc, char **argv) {
     }
 
     // STEP 2: CAST RAYS
-    std::vector<uint8_t> pixel_buffer(img_width * img_height * 3, 0);
-    render(img_width, img_height, cam, shapes, pixel_buffer);
+    outputImage.pixels.assign(img_width * img_height * 3, 0);
+    render(img_width, img_height, cam, shapes, outputImage.pixels);
 
     // STEP 3: WRITE TO PPM FILE
-    // stuff
+    if(!outputImage.writePPM(output_ppm)) {
+        fprintf(stderr, "Error: Failed to write to %s\n", output_ppm);
+    }
+
+    return 0;
 }
