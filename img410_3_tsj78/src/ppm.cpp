@@ -65,7 +65,7 @@ bool PPMImage::writePPM(const std::string &filename) const {
     fprintf(fp, "%d %d\n", width, height);
     fprintf(fp, "%d\n", maxColor);
 
-    for(int i = 0; i < width * height * 3; i += 3) {
+    for(size_t i = 0; i < pixels.size(); i += 3) {
         fprintf(fp, "%d     %d     %d\n", pixels[i], pixels[i + 1], pixels[i + 2]);
     }
 
