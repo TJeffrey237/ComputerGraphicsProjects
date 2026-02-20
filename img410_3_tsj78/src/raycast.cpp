@@ -45,5 +45,10 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Error: Failed to write to %s\n", output_ppm);
     }
 
+    for(Shape* s : shapes) {
+        delete s;
+    }
+    shapes.clear();
+
     return 0;
 }
