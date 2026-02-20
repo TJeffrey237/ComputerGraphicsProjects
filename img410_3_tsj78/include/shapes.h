@@ -18,7 +18,7 @@ public:
     float radius;
 
     Sphere(float* pos, float r, float* col) {
-        position = pos;
+        radius = r;
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
             color[i] = col[i];
@@ -38,8 +38,8 @@ public:
             return -1.0f;
         }
 
-        float t0 = (-b - sqrt(discriminant)) / (2.0f * a);
-        float t1 = (-b + sqrt(discriminant)) / (2.0f * a);
+        float t0 = (-b - sqrtf(discriminant)) / (2.0f * a);
+        float t1 = (-b + sqrtf(discriminant)) / (2.0f * a);
 
         if(t0 > 0.0001) {
             return t0;
@@ -54,12 +54,12 @@ public:
 
 class Plane : public Shape {
 public:
-    float normal[];
+    float normal[3];
 
     Plane(float* pos, float* norm, float* col) {
         v3_normalize(normal, norm);
         for(int i = 0; i < 3; i++) {
-            position[i] = pos[i]
+            position[i] = pos[i];
             color[i] = col[i];
         }
     };
@@ -67,7 +67,7 @@ public:
     float intersect(float* Ro, float* Rd) override {
         float dot_n = v3_dot_product(Rd, normal);
 
-        if(fabs(dot_n) < 0.0001) {
+        if(fabsf(dot_n) < 0.0001) {
             return -1.0f;
         } 
 
