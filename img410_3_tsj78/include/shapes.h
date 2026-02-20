@@ -5,50 +5,84 @@
 #include <cmath>
 
 class Shape {
-public:
-    Vector3 position;
-    Vector3 color;
+public: 
+    float position[3];
+    float color[3];
 
     virtual ~Shape() {};
-    virtual float intersect(Vector3 Ro, Vector3 Rd) = 0;
+    virtual float intersect(float* Ro, float* Rd) = 0;
 };
 
 class Sphere : public Shape {
 public:
     float radius;
 
-    Sphere(Vector3 pos, float r, Vector3 col) : position(pos), color(col), radius(r) {};
-    float intersect(Vector3 Ro, vector3 Rd) override {
-        Vector3 L = v3_subtract(Ro, position);
+    Sphere(float* pos, float r, float* col) {
+        position = pos;
+        for(int i = 0; i < 3; i++) {
+            position[i] = pos[i];
+            color[i] = col[i];
+        }
+    };
+
+    float intersect(float* Ro, float* Rd) override {
+        float L[3];
+        v3_subtract(L, Ro, position);
 
         float a = v3_dot_product(Rd, Rd);
         float b = 2.0f * v3_dot_product(Rd, L);
-        float c = v3_dot_product(L, L) - (radius * radius);
+        float c = v3_dot_product(L, L) - (radius * radius); 
+
+        float discriminant = (b * b) - (4.0f * a * c);
+        if(discriminant < 0) {
+            return -1.0f;
+        }
+
+        float t0 = (-b - sqrt(discriminant)) / (2.0f * a);
+        float t1 = (-b + sqrt(discriminant)) / (2.0f * a);
+
+        if(t0 > 0.0001) {
+            return t0;
+        }
+        if(t1 > 0.0001) {
+            return t1;
+        }
+
+        return -1.0f;
     }
-}
+};
 
 class Plane : public Shape {
 public:
-    Vector3 normal;
+    float normal[];
 
-    Plane(Vector3 pos, Vector3 norm, Vector3 col) : position(pos), color(col), normal(norm) {};
-    float intersect(Vector3 Ro, Vector3 Rd) override {
+    Plane(float* pos, float* norm, float* col) {
+        v3_normalize(normal, norm);
+        for(int i = 0; i < 3; i++) {
+            position[i] = pos[i]
+            color[i] = col[i];
+        }
+    };
+
+    float intersect(float* Ro, float* Rd) override {
         float dot_n = v3_dot_product(Rd, normal);
 
         if(fabs(dot_n) < 0.0001) {
             return -1.0f;
-        }
+        } 
 
-        Vector3 L = v3_subtract(position, Ro);
+        float L[3];
+        v3_subtract(L, position, Ro);
         float t = v3_dot_product(L, normal) / dot_n;
 
-        return (t > 0) ? t : -1.0f;
+        return (t > 0.0001) ? t : -1.0f;
     }
-}
+};
 
 class Camera {
 public:
-private:
+    float width;
+    float height;
 };
 
 #endif
