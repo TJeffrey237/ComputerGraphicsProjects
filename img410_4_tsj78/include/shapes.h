@@ -8,6 +8,17 @@ class Shape {
 public: 
     float position[3];
     float color[3];
+    float c_spec[3];
+    float ns;
+
+    // defaults everything
+    Shape() : ns(20.0f) {
+        for(int i = 0; i < 3; i++) {
+            position[i] = 0.0f;
+            color[i] = 0.0f;
+            c_spec[i] = 0.0f;
+        }
+    }
 
     virtual ~Shape() {};
     virtual float intersect(float* Ro, float* Rd) = 0;
@@ -17,7 +28,7 @@ class Sphere : public Shape {
 public:
     float radius;
 
-    Sphere(float* pos, float r, float* col) {
+    Sphere(float* pos, float r, float* col, float* spec, float shiny) {
         radius = r;
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
@@ -77,6 +88,19 @@ public:
 
         return (t > 0.0001) ? t : -1.0f;
     }
+};
+
+class Light : public Shape {
+public:
+    float position[3];
+    float color[3];
+    float direction[3];
+    float theta;
+    float angular_a0;
+    float radial_a0;
+    float radial_a1;
+    float radial_a2;
+
 };
 
 class Camera {
