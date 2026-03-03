@@ -30,9 +30,11 @@ public:
 
     Sphere(float* pos, float r, float* col, float* spec, float shiny) {
         radius = r;
+        ns = shiny;
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
             color[i] = col[i];
+            c_spec[i] = spec[i];
         }
     };
 
@@ -101,6 +103,13 @@ public:
     float radial_a1;
     float radial_a2;
 
+    Light() : theta(0), angular_a0(0), radial_a0(0), radial_a1(0), radial_a2(0) {
+        for(int i = 0; i < 3; i++) {
+            position[i] = 0;
+            color[i] = 0;
+            direction[i] = 0;
+        }
+    }
 };
 
 class Camera {
