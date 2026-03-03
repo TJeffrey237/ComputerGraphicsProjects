@@ -22,6 +22,7 @@ public:
 
     virtual ~Shape() {};
     virtual float intersect(float* Ro, float* Rd) = 0;
+    virtual void getNormal(float* hit_point, float* result_normal) = 0;
 };
 
 class Sphere : public Shape {
@@ -63,17 +64,25 @@ public:
 
         return -1.0f;
     }
+
+    void getNormal(float* hit_point, float* result_normal) override {
+        v3_subtract(result_normal, hit_point, position);
+        v3_normalize(result_normal, result_normal);
+    }
 };
 
 class Plane : public Shape {
 public:
     float normal[3];
 
-    Plane(float* pos, float* norm, float* col) {
+    Plane(float* pos, float* norm, float* col, float* spec, float shiny) {
         v3_normalize(normal, norm);
+
+        ns = shiny;
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
             color[i] = col[i];
+            c_spec[i] = spec[i];
         }
     };
 
@@ -90,9 +99,15 @@ public:
 
         return (t > 0.0001) ? t : -1.0f;
     }
+
+    void getNormal(float* hit_point, float* result_normal) override {
+        result_normal[0] = normal[0];
+        result_normal[1] = normal[1];
+        result_normal[2] = normal[2];
+    }
 };
 
-class Light : public Shape {
+class Light {
 public:
     float position[3];
     float color[3];
@@ -102,12 +117,12 @@ public:
     float radial_a0;
     float radial_a1;
     float radial_a2;
-
-    Light() : theta(0), angular_a0(0), radial_a0(0), radial_a1(0), radial_a2(0) {
+    
+    Light() : theta(0.0f), angular_a0(0.0f), radial_a0(1.0f), radial_a1(0.0f), radial_a2(0.0f) {
         for(int i = 0; i < 3; i++) {
-            position[i] = 0;
-            color[i] = 0;
-            direction[i] = 0;
+            position[i] = 0.0f;
+            color[i] = 0.0f;
+            direction[i] = 0.0f;
         }
     }
 };
