@@ -32,6 +32,14 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, Camera& cam) {
             }
         }
 
+        else if(strcmp(buffer, "light") == 0) {
+            // read light values
+                // set them too
+            // default ns to 20
+            // check for the semicolon, remember that the file IS supposed to have one
+            // otherwise same as the others
+        }
+
         // reading sphere data
         else if(strcmp(buffer, "sphere") == 0) {
             float pos[3] = {0, 0, 0};
