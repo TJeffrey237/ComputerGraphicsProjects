@@ -20,7 +20,7 @@ Ensure you are still inside the root directory (img410_4_tsj78)
 The format for running raycast.exe is as follows:\
 ```./build/raycast <img_width> <img_height> <scenefile.scene> <output.ppm>```\
 Here is an example command using the available test scene image inside the examples folder:\
-```./build/raycast 400 420 examples/test2.scene output.ppm```\
+```./build/raycast 400 420 examples/test1.scene output.ppm```\
 The <output.ppm> image can be found inside the root directory for viewing.
 
 **NOTE** The examples above were done on windows, please contact me if there are any issues with platforms.
