@@ -43,11 +43,11 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                         float dist_to_light = v3_length(L_ray);
                         v3_normalize(L_ray, L_ray);
                         // offset origin with 0.001
-                        float shadow_origin[3] = {P[0] + N[0] * 0.001f, P[1] + N[1] * 0.001f, P[2] + N[2] * 0.001f}
+                        float shadow_origin[3] = {P[0] + N[0] * 0.001f, P[1] + N[1] * 0.001f, P[2] + N[2] * 0.001f};
 
                         bool in_shadow = false;
                         for(Shape* s : shapes) {
-                            float shadow_t = s->intersect(shadow_origin, L_ray)
+                            float shadow_t = s->intersect(shadow_origin, L_ray);
                             if(shadow_t > 0.0001f && shadow_t < dist_to_light) {
                                 in_shadow = true;
                                 break;
@@ -69,7 +69,7 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                             v3_normalize(Vobj, Vobj);
                             float cos_alpha = v3_dot_product(Vobj, L->direction);
                             // converting to radians
-                            float cos_theta = cos(L->theta * M_PI / 180.0f);
+                            float cos_theta = cos(L->theta * 2 * acos(0.0) / 180.0f);
                             
                             if (cos_alpha < cos_theta) {
                                 ang_attn = 0.0f;
