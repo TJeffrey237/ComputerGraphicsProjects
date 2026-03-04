@@ -8,6 +8,6 @@
 #include "shapes.h"
 
 void render(uint32_t width, uint32_t height, const Camera& cam,
-            const std::vector<Shape*>& shapes, std::vector<uint8_t>& buffer);
+            const std::vector<Shape*>& shapes, const std::vector<Light*>& lights, std::vector<uint8_t>& buffer);
 
 #endif
