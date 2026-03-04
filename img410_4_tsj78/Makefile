@@ -25,7 +25,6 @@ $(OBJDIR):
 $(BUILDDIR):
 	mkdir -p $(BUILDDIR)
 
-
 $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS)
 
