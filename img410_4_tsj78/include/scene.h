@@ -6,6 +6,6 @@
 #include <vector>
 #include "shapes.h"
 
-int read_scene(const char* filename, std::vector<Shape*>& shapes, Camera& cam);
+int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Light*>& lights, Camera& cam);
 
 #endif
