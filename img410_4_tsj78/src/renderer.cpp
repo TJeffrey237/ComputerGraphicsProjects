@@ -64,13 +64,14 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                         float ang_attn = 1.0f;
                         // check for spotlight
                         if(L->theta > 0) {
-                            float Vobj[3]; 
-                            v3_subtract(Vobj, P, L->position);
-                            v3_normalize(Vobj, Vobj);
-                            float cos_alpha = v3_dot_product(Vobj, L->direction);
+                            // point to light vector
+                            float V_obj[3]; 
+                            v3_subtract(V_obj, P, L->position);
+                            v3_normalize(V_obj, V_obj);
+                            float cos_alpha = v3_dot_product(V_obj, L->direction);
                             // converting to radians
                             float cos_theta = cos(L->theta * 2 * acos(0.0) / 180.0f);
-                            
+                
                             if (cos_alpha < cos_theta) {
                                 ang_attn = 0.0f;
                             } else {
