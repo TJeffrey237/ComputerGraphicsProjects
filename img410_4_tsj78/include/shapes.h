@@ -118,6 +118,7 @@ public:
     float radial_a1;
     float radial_a2;
     
+    // defaults all the light settings
     Light() : theta(0.0f), angular_a0(0.0f), radial_a0(1.0f), radial_a1(0.0f), radial_a2(0.0f) {
         for(int i = 0; i < 3; i++) {
             position[i] = 0.0f;

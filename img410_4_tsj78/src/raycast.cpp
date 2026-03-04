@@ -29,16 +29,17 @@ int main(int argc, char **argv) {
     }
 
     std::vector<Shape*> shapes;
+    std::vector<Light*> lights;
     Camera cam;
 
     // STEP 1: READ SCENE DATA
-    if(read_scene(input_scene, shapes, cam) < 0) {
+    if(read_scene(input_scene, shapes, lights, cam) < 0) {
         return 1;
     }
 
     // STEP 2: CAST RAYS
     outputImage.pixels.assign(img_width * img_height * 3, 0);
-    render(img_width, img_height, cam, shapes, outputImage.pixels);
+    render(img_width, img_height, cam, shapes, lights, outputImage.pixels);
 
     // STEP 3: WRITE TO PPM FILE
     if(!outputImage.writePPM(output_ppm)) {
