@@ -37,10 +37,10 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                     float final_color[3] = {0.0f, 0.0f, 0.0f};
 
                     for(Light* L : lights) {
-                        // STEP 1: Checking for shadows 
+                        // STEP 1: CHECK FOR SHADOWS
                         float L_ray[3];
                         v3_subtract(L_ray, L->position, P);
-                        float dist_to_light[3] = v3_length(L_ray);
+                        float dist_to_light = v3_length(L_ray);
                         v3_normalize(L_ray, L_ray);
                         // offset origin with 0.001
                         float shadow_origin[3] = {P[0] + N[0] * 0.001f, P[1] + N[1] * 0.001f, P[2] + N[2] * 0.001f}
@@ -58,21 +58,61 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                             continue;
                         }
 
+                        // STEP 2: CALCULATE ATTENUATION
                         float illumination[3] = {0.0f, 0.0f, 0.0f};
                         float rad_attn = 1.0f / (L->radial_a2 * (dist_to_light * dist_to_light) + L->radial_a1 * dist_to_light + L->radial_a0);
                         float ang_attn = 1.0f;
-                        // check for spotlight and calc angular attenuation
+                        // check for spotlight
                         if(L->theta > 0) {
-
+                            float Vobj[3]; 
+                            v3_subtract(Vobj, P, L->position);
+                            v3_normalize(Vobj, Vobj);
+                            float cos_alpha = v3_dot_product(Vobj, L->direction);
+                            // converting to radians
+                            float cos_theta = cos(L->theta * M_PI / 180.0f);
+                            
+                            if (cos_alpha < cos_theta) {
+                                ang_attn = 0.0f;
+                            } else {
+                                ang_attn = pow(cos_alpha, L->angular_a0);
+                            }
                         }
 
-                        // 
+                        // STEP 3: CALC SPECULAR AND DIFFUSE COMPONENTS
+                        float n_dot_l = v3_dot_product(N, L_ray);
+                        if(n_dot_l > 0) {
+                            illumination[0] += closest_shape->color[0] * L->color[0] * n_dot_l;
+                            illumination[1] += closest_shape->color[1] * L->color[1] * n_dot_l;
+                            illumination[2] += closest_shape->color[2] * L->color[2] * n_dot_l;
+                        }
+
+                        // reflection vector of L_ray about N
+                        float NegL_ray[3] = {-L_ray[0], -L_ray[1], -L_ray[2]};
+                        float R[3];
+                        v3_reflect(R, NegL_ray, N);
+
+                        // view vector
+                        float V[3] = {-Rd[0], -Rd[1], -Rd[2]};
+                        v3_normalize(V, V);
+
+                        float r_dot_v = v3_dot_product(R, V);
+                        if(r_dot_v > 0) {
+                            float spec_comp = powf(r_dot_v, closest_shape->ns);
+                            illumination[0] += closest_shape->c_spec[0] * L->color[0] * spec_comp;
+                            illumination[1] += closest_shape->c_spec[1] * L->color[1] * spec_comp;
+                            illumination[2] += closest_shape->c_spec[2] * L->color[2] * spec_comp;
+                        }
+
+                        // STEP 4: SUM LIGHT CONTRIBUTIONS
+                        final_color[0] += rad_attn * ang_attn * illumination[0];
+                        final_color[1] += rad_attn * ang_attn * illumination[1];
+                        final_color[2] += rad_attn * ang_attn * illumination[2];
                     }
 
-
-                    buffer[shape_index] = (uint8_t)(closest_shape->color[0] * 255);
-                    buffer[shape_index + 1] = (uint8_t)(closest_shape->color[1] * 255);
-                    buffer[shape_index + 2] = (uint8_t)(closest_shape->color[2] * 255);
+                    // STEP 5: CLAMP COLORS
+                    buffer[shape_index] = (uint8_t)(std::min(1.0f, final_color[0]) * 255);
+                    buffer[shape_index + 1] = (uint8_t)(std::min(1.0f, final_color[1]) * 255);
+                    buffer[shape_index + 2] = (uint8_t)(std::min(1.0f, final_color[2]) * 255);
                 }
                 else {
                     buffer[shape_index] = 0;
