@@ -1,6 +1,6 @@
 #include "scene.h"
 
-int read_scene(const char* filename, std::vector<Shape*>& shapes, Camera& cam) {
+int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Light*>& lights, Camera& cam) {
     FILE* fp = fopen(filename, "r");
     if(!fp) {
         fprintf(stderr, "Error: Cannot open file %s.\n", filename);
@@ -32,19 +32,46 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, Camera& cam) {
             }
         }
 
+        // reading light data
         else if(strcmp(buffer, "light") == 0) {
-            // read light values
-                // set them too
-            // default ns to 20
-            // check for the semicolon, remember that the file IS supposed to have one
-            // otherwise same as the others
+            Light* L = new Light();
+
+            while(fscanf(fp, "%127s", buffer) == 1 && strcmp(buffer, ";") != 0) {
+                if(strcmp(buffer, "position:") == 0) {
+                    fscanf(fp, "%f %f %f", &L->position[0], &L->position[1], &L->position[2]);
+                }
+                else if(strcmp(buffer, "color:") == 0) {
+                    fscanf(fp, "%f %f %f", &L->color[0], &L->color[1], &L->color[2]);
+                }
+                else if(strcmp(buffer, "direction:") == 0) {
+                    fscanf(fp, "%f %f %f", &L->direction[0], &L->direction[1], &L->direction[2]);
+                }
+                else if(strcmp(buffer, "radial_a0:") == 0) {
+                    fscanf(fp, "%f", &L->radial_a0);
+                }
+                else if(strcmp(buffer, "radial_a1:") == 0) {
+                    fscanf(fp, "%f", &L->radial_a1);
+                }
+                else if(strcmp(buffer, "radial_a2:") == 0) {
+                    fscanf(fp, "%f", &L->radial_a2);
+                }
+                else if(strcmp(buffer, "angular_a0:") == 0) {
+                    fscanf(fp, "%f", &L->angular_a0);
+                }
+                else if(strcmp(buffer, "theta:") == 0) {
+                    fscanf(fp, "%f", &L->theta);
+                }
+            }
+            lights.push_back(L);
         }
 
         // reading sphere data
         else if(strcmp(buffer, "sphere") == 0) {
-            float pos[3] = {0, 0, 0};
-            float col[3] = {0, 0, 0};
-            float radius = 0;
+            float pos[3] = {0.0f, 0.0f, 0.0f};
+            float col[3] = {0.0f, 0.0f, 0.0f};
+            float spec[3] = {0.0f, 0.0f, 0.0f};
+            float radius = 0.0f;
+            float ns = 20.0f;
 
             while(fscanf(fp, "%127s", buffer) == 1 && strcmp(buffer, ";") != 0) {
                 if(strcmp(buffer, "position:") == 0) {
@@ -56,15 +83,23 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, Camera& cam) {
                 else if(strcmp(buffer, "radius:") == 0) {
                     fscanf(fp, "%f", &radius);
                 }
+                else if(strcmp(buffer, "c_spec:") == 0) {
+                    fscanf(fp, "%f %f %f", &spec[0], &spec[1], &spec[2]);
+                }
+                else if(strcmp(buffer, "ns:") == 0) {
+                    fscanf(fp, "%f", &ns);
+                }
             }
-            shapes.push_back(new Sphere(pos, radius, col));
+            shapes.push_back(new Sphere(pos, radius, col, spec, ns));
         }
 
         // reading plane data
         else if(strcmp(buffer, "plane") == 0) {
-            float pos[3] = {0, 0, 0};
-            float col[3] = {0, 0, 0};
-            float norm[3] = {0, 0, 0};
+            float pos[3] = {0.0f, 0.0f, 0.0f};
+            float col[3] = {0.0f, 0.0f, 0.0f};
+            float norm[3] = {0.0f, 0.0f, 0.0f};
+            float spec[3] = {0.0f, 0.0f, 0.0f};
+            float ns = 20.0f;
 
             while(fscanf(fp, "%127s", buffer) == 1 && strcmp(buffer, ";") != 0) {
                 if(strcmp(buffer, "position:") == 0) {
@@ -76,8 +111,14 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, Camera& cam) {
                 else if(strcmp(buffer, "normal:") == 0) {
                     fscanf(fp, "%f %f %f", &norm[0], &norm[1], &norm[2]);
                 }
+                else if(strcmp(buffer, "c_spec:") == 0) {
+                    fscanf(fp, "%f %f %f", &spec[0], &spec[1], &spec[2]);
+                }
+                else if(strcmp(buffer, "ns:") == 0) {
+                    fscanf(fp, "%f", &ns);
+                }
             }
-            shapes.push_back(new Plane(pos, norm, col));
+            shapes.push_back(new Plane(pos, norm, col, spec, ns));
         }
     }
 

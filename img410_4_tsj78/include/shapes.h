@@ -11,7 +11,7 @@ public:
     float c_spec[3];
     float ns;
 
-    // defaults everything
+    // defaults everything (even if already done in parser)
     Shape() : ns(20.0f) {
         for(int i = 0; i < 3; i++) {
             position[i] = 0.0f;
