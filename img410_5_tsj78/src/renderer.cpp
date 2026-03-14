@@ -118,9 +118,9 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             ray_trace(reflect_Ro, reflect_Rd, shapes, lights, depth + 1, reflected_color);
 
             float ref = closest_shape->reflection;
-            final_color[0] = (1.0f - ref) * final_color[0] + r * reflected_color[0];
-            final_color[1] = (1.0f - ref) * final_color[1] + r * reflected_color[1];
-            final_color[2] = (1.0f - ref) * final_color[2] + r * reflected_color[2];
+            final_color[0] = (1.0f - ref) * final_color[0] + ref * reflected_color[0];
+            final_color[1] = (1.0f - ref) * final_color[1] + ref * reflected_color[1];
+            final_color[2] = (1.0f - ref) * final_color[2] + ref * reflected_color[2];
         }
     }
     else {
