@@ -2,11 +2,11 @@
 
 #define MAX_DEPTH 5
 
-void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const std::vector<Light*>& lights, int depth, float* out_color) {
+void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const std::vector<Light*>& lights, int depth, float* final_color) {
     if(depth > MAX_DEPTH) {
-        out_color[0] = 0;
-        out_color[1] = 0;
-        out_color[2] = 0;
+        final_color[0] = 0;
+        final_color[1] = 0;
+        final_color[2] = 0;
         return;
     }
 
@@ -22,7 +22,6 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
         }
     }
 
-    size_t shape_index = (j * width + i) * 3;
     if(closest_shape) {
         // getting the normal at the intersection point
         float P[3], N[3];
@@ -30,8 +29,6 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
         P[1] = Ro[1] + closest_t * Rd[1];
         P[2] = Ro[2] + closest_t * Rd[2];
         closest_shape->getNormal(P, N);
-
-        float final_color[3] = {0.0f, 0.0f, 0.0f};
 
         for(Light* L : lights) {
             // First check for shadows
@@ -106,16 +103,12 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             final_color[1] += rad_attn * ang_attn * illumination[1];
             final_color[2] += rad_attn * ang_attn * illumination[2];
         }
-
-        // fifth clamp the colors
-        buffer[shape_index] = (uint8_t)(std::min(1.0f, final_color[0]) * 255);
-        buffer[shape_index + 1] = (uint8_t)(std::min(1.0f, final_color[1]) * 255);
-        buffer[shape_index + 2] = (uint8_t)(std::min(1.0f, final_color[2]) * 255);
     }
     else {
-        buffer[shape_index] = 0;
-        buffer[shape_index + 1] = 0;
-        buffer[shape_index + 2] = 0;
+        final_color[0] = 0.0f;
+        final_color[1] = 0.0f;
+        final_color[2] = 0.0f;
+        return;
     }
 }
 
@@ -135,6 +128,12 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                 float final_color[3] = {0.0f, 0.0f, 0.0f};
                 
                 ray_trace(Ro, Rd, shapes, lights, 0, final_color);
+                
+                size_t shape_index = (j * width + i) * 3;
+                // clamp the colors
+                buffer[shape_index] = (uint8_t)(std::min(1.0f, final_color[0]) * 255);
+                buffer[shape_index + 1] = (uint8_t)(std::min(1.0f, final_color[1]) * 255);
+                buffer[shape_index + 2] = (uint8_t)(std::min(1.0f, final_color[2]) * 255);
             }
         }
     }
