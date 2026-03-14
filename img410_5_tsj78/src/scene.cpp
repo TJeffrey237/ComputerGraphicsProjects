@@ -72,6 +72,7 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
             float spec[3] = {0.0f, 0.0f, 0.0f};
             float radius = 0.0f;
             float ns = 20.0f;
+            float reflection = 0.0f;
 
             while(fscanf(fp, "%127s", buffer) == 1 && strcmp(buffer, ";") != 0) {
                 if(strcmp(buffer, "position:") == 0) {
@@ -89,8 +90,11 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                 else if(strcmp(buffer, "ns:") == 0) {
                     fscanf(fp, "%f", &ns);
                 }
+                else if(strcmp(buffer, "reflection") == 0) {
+                    fscanf(fp, "%f", &reflection);
+                }
             }
-            shapes.push_back(new Sphere(pos, radius, col, spec, ns));
+            shapes.push_back(new Sphere(pos, radius, col, spec, ns, reflection));
         }
 
         // reading plane data
@@ -100,6 +104,7 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
             float norm[3] = {0.0f, 0.0f, 0.0f};
             float spec[3] = {0.0f, 0.0f, 0.0f};
             float ns = 20.0f;
+            float reflection = 0.0f;
 
             while(fscanf(fp, "%127s", buffer) == 1 && strcmp(buffer, ";") != 0) {
                 if(strcmp(buffer, "position:") == 0) {
@@ -117,8 +122,11 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                 else if(strcmp(buffer, "ns:") == 0) {
                     fscanf(fp, "%f", &ns);
                 }
+                else if(strcmp(buffer, "reflection") == 0) {
+                    fscanf(fp, "%f", &reflection);
+                }
             }
-            shapes.push_back(new Plane(pos, norm, col, spec, ns));
+            shapes.push_back(new Plane(pos, norm, col, spec, ns, reflection));
         }
     }
 

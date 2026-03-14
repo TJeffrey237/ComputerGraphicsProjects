@@ -37,7 +37,7 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                     float final_color[3] = {0.0f, 0.0f, 0.0f};
 
                     for(Light* L : lights) {
-                        // STEP 1: CHECK FOR SHADOWS
+                        // First check for shadows
                         float L_ray[3];
                         v3_subtract(L_ray, L->position, P);
                         float dist_to_light = v3_length(L_ray);
@@ -58,7 +58,7 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                             continue;
                         }
 
-                        // STEP 2: CALCULATE ATTENUATION
+                        // Second calculate attenuation
                         float illumination[3] = {0.0f, 0.0f, 0.0f};
                         float rad_attn = 1.0f / (L->radial_a2 * (dist_to_light * dist_to_light) + L->radial_a1 * dist_to_light + L->radial_a0);
                         float ang_attn = 1.0f;
@@ -79,7 +79,7 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                             }
                         }
 
-                        // STEP 3: CALC SPECULAR AND DIFFUSE COMPONENTS
+                        // Third calculate diffuse & specular components
                         float n_dot_l = v3_dot_product(N, L_ray);
                         if(n_dot_l > 0) {
                             illumination[0] += closest_shape->color[0] * L->color[0] * n_dot_l;
@@ -104,13 +104,13 @@ void render(uint32_t width, uint32_t height, const Camera& cam,
                             illumination[2] += closest_shape->c_spec[2] * L->color[2] * spec_comp;
                         }
 
-                        // STEP 4: SUM LIGHT CONTRIBUTIONS
+                        // Fourth sum all of the light contributions
                         final_color[0] += rad_attn * ang_attn * illumination[0];
                         final_color[1] += rad_attn * ang_attn * illumination[1];
                         final_color[2] += rad_attn * ang_attn * illumination[2];
                     }
 
-                    // STEP 5: CLAMP COLORS
+                    // fifth clamp the colors
                     buffer[shape_index] = (uint8_t)(std::min(1.0f, final_color[0]) * 255);
                     buffer[shape_index + 1] = (uint8_t)(std::min(1.0f, final_color[1]) * 255);
                     buffer[shape_index + 2] = (uint8_t)(std::min(1.0f, final_color[2]) * 255);

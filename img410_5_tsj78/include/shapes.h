@@ -10,9 +10,10 @@ public:
     float color[3];
     float c_spec[3];
     float ns;
+    float reflection;
 
     // defaults everything (even if already done in parser)
-    Shape() : ns(20.0f) {
+    Shape() : ns(20.0f), reflection(0.0f) {
         for(int i = 0; i < 3; i++) {
             position[i] = 0.0f;
             color[i] = 0.0f;
@@ -29,9 +30,11 @@ class Sphere : public Shape {
 public:
     float radius;
 
-    Sphere(float* pos, float r, float* col, float* spec, float shiny) {
+    Sphere(float* pos, float r, float* col, float* spec, float shiny, float ref) {
         radius = r;
         ns = shiny;
+        reflection = ref;
+        
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
             color[i] = col[i];
@@ -75,10 +78,11 @@ class Plane : public Shape {
 public:
     float normal[3];
 
-    Plane(float* pos, float* norm, float* col, float* spec, float shiny) {
+    Plane(float* pos, float* norm, float* col, float* spec, float shiny, float ref) {
         v3_normalize(normal, norm);
 
         ns = shiny;
+        reflection = ref;
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
             color[i] = col[i];
