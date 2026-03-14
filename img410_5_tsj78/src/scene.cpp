@@ -90,7 +90,7 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                 else if(strcmp(buffer, "ns:") == 0) {
                     fscanf(fp, "%f", &ns);
                 }
-                else if(strcmp(buffer, "reflection") == 0) {
+                else if(strcmp(buffer, "reflection:") == 0) {
                     fscanf(fp, "%f", &reflection);
                 }
             }
@@ -122,7 +122,7 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                 else if(strcmp(buffer, "ns:") == 0) {
                     fscanf(fp, "%f", &ns);
                 }
-                else if(strcmp(buffer, "reflection") == 0) {
+                else if(strcmp(buffer, "reflection:") == 0) {
                     fscanf(fp, "%f", &reflection);
                 }
             }
