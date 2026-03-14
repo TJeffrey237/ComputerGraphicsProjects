@@ -1,8 +1,8 @@
-# Project 4: Illumination
+# Project 5: Raytracing
 **Name:** Tyler Jeffrey
 **Email:** tsj78@nau.edu
 
-This program implements lighting to the previous raycasting project.
+This program implements the recursive raytracing algorithm to the previous program.
 
 ## Usage
 ### Directory Structure
@@ -16,7 +16,7 @@ This project uses a Makefile for compilation. To build, navigate inside the root
 This will create the raycast executable inside the build folder. To remove build artifacts, run:\
 ```make clean```
 ### Running The Executable
-Ensure you are still inside the root directory (img410_4_tsj78)
+Ensure you are still inside the root directory (img410_5_tsj78)
 The format for running raycast.exe is as follows:\
 ```./build/raycast <img_width> <img_height> <scenefile.scene> <output.ppm>```\
 Here is an example command using the available test scene image inside the examples folder:\
