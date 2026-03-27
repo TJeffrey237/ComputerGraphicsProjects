@@ -16,7 +16,7 @@ This project uses a Makefile for compilation. To build, navigate inside the root
 This will create the raycast executable inside the build folder. To remove build artifacts, run:\
 ```make clean```
 ### Running The Executable
-Ensure you are still inside the root directory (img410_5_tsj78)
+Ensure you are still inside the root directory (img410_6_tsj78)
 The format for running raycast.exe is as follows:\
 ```./build/raycast <img_width> <img_height> <scenefile.scene> <output.ppm>```\
 Here is an example command using the available test scene image inside the examples folder:\
