@@ -84,6 +84,7 @@ public:
     void getUV(float* hit_point, float& u, float& v) override {
         float d[3];
         v3_subtract(d, hit_point, position);
+        v3_normalize(d, d);
 
         u = 0.5f + atan2f(d[2], d[0]) / (2.0f * 2 * acos(0.0));
         v = 0.5f - asinf(d[1]) / (2 * acos(0.0));
