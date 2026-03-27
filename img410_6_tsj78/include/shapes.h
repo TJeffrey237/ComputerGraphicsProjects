@@ -11,6 +11,7 @@ public:
     float c_spec[3];
     float ns;
     float reflection;
+    char[64] texture;
 
     // defaults everything (even if already done in parser)
     Shape() : ns(20.0f), reflection(0.0f) {
@@ -30,10 +31,11 @@ class Sphere : public Shape {
 public:
     float radius;
 
-    Sphere(float* pos, float r, float* col, float* spec, float shiny, float ref) {
+    Sphere(float* pos, float r, float* col, float* spec, float shiny, float ref, char* tex) {
         radius = r;
         ns = shiny;
         reflection = ref;
+        strncpy(texture, tex, 64);
         
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
@@ -78,11 +80,13 @@ class Plane : public Shape {
 public:
     float normal[3];
 
-    Plane(float* pos, float* norm, float* col, float* spec, float shiny, float ref) {
+    Plane(float* pos, float* norm, float* col, float* spec, float shiny, float ref, char* tex) {
         v3_normalize(normal, norm);
 
         ns = shiny;
         reflection = ref;
+        strncpy(texture, tex, 64);
+
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
             color[i] = col[i];
