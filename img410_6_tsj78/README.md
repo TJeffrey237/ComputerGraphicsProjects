@@ -26,4 +26,4 @@ The <output.ppm> image can be found inside the root directory for viewing.
 **NOTE** The examples above were done on windows, please contact me if there are any issues with platforms.
 
 ## Known Issues
-There are no known issues at this time.
+1. Because texture mapping has only been implemented on the Sphere object, it is currently impossible to try mapping the texture onto a Plane object.
