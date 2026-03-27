@@ -2,6 +2,7 @@
 #define SHAPES_H
 
 #include "v3math.h"
+#include "ppm.h"
 #include <cmath>
 
 class Shape {
@@ -11,10 +12,11 @@ public:
     float c_spec[3];
     float ns;
     float reflection;
-    char[64] texture;
+    PPMImage* texture;
+    bool has_texture;
 
     // defaults everything (even if already done in parser)
-    Shape() : ns(20.0f), reflection(0.0f) {
+    Shape() : ns(20.0f), reflection(0.0f), texture(nullptr), has_texture(false) {
         for(int i = 0; i < 3; i++) {
             position[i] = 0.0f;
             color[i] = 0.0f;
@@ -22,20 +24,24 @@ public:
         }
     }
 
-    virtual ~Shape() {};
+    virtual ~Shape() {
+        if(texture) {
+            delete texture;
+        }
+    };
     virtual float intersect(float* Ro, float* Rd) = 0;
     virtual void getNormal(float* hit_point, float* result_normal) = 0;
+    virtual void getUV(float* hit_point, float& u, float& v) = 0;
 };
 
 class Sphere : public Shape {
 public:
     float radius;
 
-    Sphere(float* pos, float r, float* col, float* spec, float shiny, float ref, char* tex) {
+    Sphere(float* pos, float r, float* col, float* spec, float shiny, float ref) {
         radius = r;
         ns = shiny;
         reflection = ref;
-        strncpy(texture, tex, 64);
         
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
@@ -74,18 +80,24 @@ public:
         v3_subtract(result_normal, hit_point, position);
         v3_normalize(result_normal, result_normal);
     }
+
+    void getUV(float* hit_point, float& u, float& v) override {
+        float d[3];
+        v3_subtract(d, hit_point, position);
+
+        u = 0.5f + atan2f(d[2], d[0]) / (2.0f * 2 * acos(0.0));
+        v = 0.5f - asinf(d[1]) / (2 * acos(0.0));
+    }
 };
 
 class Plane : public Shape {
 public:
     float normal[3];
 
-    Plane(float* pos, float* norm, float* col, float* spec, float shiny, float ref, char* tex) {
+    Plane(float* pos, float* norm, float* col, float* spec, float shiny, float ref) {
         v3_normalize(normal, norm);
-
         ns = shiny;
         reflection = ref;
-        strncpy(texture, tex, 64);
 
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
@@ -112,6 +124,12 @@ public:
         result_normal[0] = normal[0];
         result_normal[1] = normal[1];
         result_normal[2] = normal[2];
+    }
+
+    // nothing happening because Plane implementation for tex mapping is not required for now.
+    void getUV(float* hit_point, float& u, float& v) override {
+        u = 0.0f;
+        v = 0.0f;
     }
 };
 

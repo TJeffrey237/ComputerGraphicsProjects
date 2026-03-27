@@ -5,6 +5,7 @@
 #include <string.h>
 #include <vector>
 #include "shapes.h"
+#include "ppm.h"
 
 int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Light*>& lights, Camera& cam);
 

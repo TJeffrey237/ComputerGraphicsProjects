@@ -73,7 +73,7 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
             float radius = 0.0f;
             float ns = 20.0f;
             float reflection = 0.0f;
-            char texture[64] = {0};
+            char texture_name[65] = "";
 
 
             while(fscanf(fp, "%127s", buffer) == 1 && strcmp(buffer, ";") != 0) {
@@ -96,10 +96,25 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                     fscanf(fp, "%f", &reflection);
                 }
                 else if(strcmp(buffer, "texture:") == 0) {
-                    fscanf(fp, "%64s", texture);
+                    fscanf(fp, "%64s", texture_name);
                 }
             }
-            shapes.push_back(new Sphere(pos, radius, col, spec, ns, reflection, texture));
+            
+            Sphere* s = new Sphere(pos, radius, col, spec, ns, reflection);
+
+            if(strlen(texture_name) > 0) {
+                s->texture = new PPMImage();
+                if(s->texture->readPPM(texture_name)) {
+                    s->has_texture = true;
+                }
+                else {
+                    fprintf(stderr, "Warning: Unable to read texture %s.", texture_name);
+                    delete s->texture;
+                    s->texture = nullptr;
+                }
+            }
+
+            shapes.push_back(s);
         }
 
         // reading plane data
@@ -110,7 +125,6 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
             float spec[3] = {0.0f, 0.0f, 0.0f};
             float ns = 20.0f;
             float reflection = 0.0f;
-            char texture[64] = {0};
 
             while(fscanf(fp, "%127s", buffer) == 1 && strcmp(buffer, ";") != 0) {
                 if(strcmp(buffer, "position:") == 0) {
@@ -131,11 +145,8 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                 else if(strcmp(buffer, "reflection:") == 0) {
                     fscanf(fp, "%f", &reflection);
                 }
-                else if(strcmp(buffer, "texture:") == 0) {
-                    fscanf(fp, "%64s", texture);
-                }
             }
-            shapes.push_back(new Plane(pos, norm, col, spec, ns, reflection, texture));
+            shapes.push_back(new Plane(pos, norm, col, spec, ns, reflection));
         }
     }
 
