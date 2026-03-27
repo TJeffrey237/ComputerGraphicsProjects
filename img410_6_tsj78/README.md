@@ -1,8 +1,8 @@
-# Project 5: Raytracing
+# Project 6: Texturing
 **Name:** Tyler Jeffrey
 **Email:** tsj78@nau.edu
 
-This program implements the recursive raytracing algorithm to the previous program.
+This program implements texture mapping to objects.
 
 ## Usage
 ### Directory Structure
