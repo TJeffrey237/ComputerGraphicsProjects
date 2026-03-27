@@ -1,14 +1,5 @@
 #include "scene.h"
 
-// helper function to remove quotes from texture file names
-void strip_quotes(char* s) {
-    size_t len = strlen(s);
-    if (len >= 2 && s[0] == '"' && s[len-1] == '"') {
-        memmove(s, s + 1, len - 2);
-        s[len-2] = '\0';
-    }
-}
-
 int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Light*>& lights, Camera& cam) {
     FILE* fp = fopen(filename, "r");
     if(!fp) {
@@ -54,6 +45,7 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                 }
                 else if(strcmp(buffer, "direction:") == 0) {
                     fscanf(fp, "%f %f %f", &L->direction[0], &L->direction[1], &L->direction[2]);
+                    v3_normalize(L->direction, L->direction);
                 }
                 else if(strcmp(buffer, "radial_a0:") == 0) {
                     fscanf(fp, "%f", &L->radial_a0);
@@ -105,8 +97,9 @@ int read_scene(const char* filename, std::vector<Shape*>& shapes, std::vector<Li
                     fscanf(fp, "%f", &reflection);
                 }
                 else if(strcmp(buffer, "texture:") == 0) {
-                    fscanf(fp, "%64s", texture_name);
-                    strip_quotes(texture_name);
+                    fscanf(fp, " \""); 
+                    fscanf(fp, "%64[^\"]", texture_name);
+                    fscanf(fp, "\"");
                 }
             }
 
