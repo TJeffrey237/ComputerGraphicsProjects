@@ -30,7 +30,35 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
         P[2] = Ro[2] + closest_t * Rd[2];
         closest_shape->getNormal(P, N);
 
+        float diffuse_color[3];
+
+        // tex mapping
+        if(closest_shape->has_texture && closest_shape->texture != nullptr) {
+            float u, v;
+            closest_shape->getUV(P, u, v);
+
+            int tx = (int)(u * closest_shape->texture->width);
+            int ty = (int)(v * closest_shape->texture->height);
+
+            // clamping tx and ty to be within the texture dimensions
+            tx = std::max(0, std::min(tx, closest_shape->texture->width - 1));
+            ty = std::max(0, std::min(ty, closest_shape->texture->height - 1));
+
+            int tex_index = (ty * closest_shape->texture->width + tx) * 3;
+
+            // coverting back to values between 0.0 and 1.0
+            diffuse_color[0] = closest_shape->texture->pixels[tex_index] / 255.0f;
+            diffuse_color[1] = closest_shape->texture->pixels[tex_index + 1] / 255.0f;
+            diffuse_color[2] = closest_shape->texture->pixels[tex_index + 2] / 255.0f;
+        }
+        else {
+            diffuse_color[0] = closest_shape->color[0];
+            diffuse_color[1] = closest_shape->color[1];
+            diffuse_color[2] = closest_shape->color[2];
+        }
+
         // this is for light calculation
+
         for(Light* L : lights) {
             // checking for shadows
             float L_ray[3];
@@ -77,9 +105,9 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             // calculate diffuse & specular components
             float n_dot_l = v3_dot_product(N, L_ray);
             if(n_dot_l > 0) {
-                illumination[0] += closest_shape->color[0] * L->color[0] * n_dot_l;
-                illumination[1] += closest_shape->color[1] * L->color[1] * n_dot_l;
-                illumination[2] += closest_shape->color[2] * L->color[2] * n_dot_l;
+                illumination[0] += diffuse_color[0] * L->color[0] * n_dot_l;
+                illumination[1] += diffuse_color[1] * L->color[1] * n_dot_l;
+                illumination[2] += diffuse_color[2] * L->color[2] * n_dot_l;
             }
 
             // reflection vector of L_ray about N
