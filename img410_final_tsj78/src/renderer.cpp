@@ -160,7 +160,7 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             float cos_i = v3_dot_product(Rd, N);
 
             // check for entering/exiting a surface
-            if(cos_i < 0) {
+            if(cos_i > 0.0f) {
                 std::swap(n1, n2);
                 current_N[0] = -N[0];
                 current_N[1] = -N[1];
@@ -181,7 +181,9 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
                 v3_normalize(refract_Rd, refract_Rd);
 
                 // offsetting origin to avoid self-intersection
-                float refract_Ro[3] = {P[0] - current_N[0] * 0.001f, P[1] - current_N[1] * 0.001f, P[2] - current_N[2] * 0.001f};
+                float refract_Ro[3] = {P[0] - current_N[0] * 0.001f, 
+                                       P[1] - current_N[1] * 0.001f,
+                                       P[2] - current_N[2] * 0.001f};
 
                 float refracted_color[3] = {0.0f, 0.0f, 0.0f};
                 ray_trace(refract_Ro, refract_Rd, shapes, lights, depth + 1, refracted_color);
