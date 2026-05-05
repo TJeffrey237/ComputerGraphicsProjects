@@ -1,8 +1,8 @@
-# Project 6: Texturing
+# Project Final: Refraction
 **Name:** Tyler Jeffrey
 **Email:** tsj78@nau.edu
 
-This program implements texture mapping to objects.
+This program implements refraction.
 
 ## Usage
 ### Directory Structure
@@ -26,4 +26,4 @@ The <output.ppm> image can be found inside the root directory for viewing.
 **NOTE** The examples above were done on windows, please contact me if there are any issues with platforms.
 
 ## Known Issues
-1. Because texture mapping has only been implemented on the Sphere object, it is currently impossible to try mapping the texture onto a Plane object.
+N/A
