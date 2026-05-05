@@ -12,11 +12,13 @@ public:
     float c_spec[3];
     float ns;
     float reflection;
+    float refraction;
+    float ior;
     PPMImage* texture;
     bool has_texture;
 
     // defaults everything (even if already done in parser)
-    Shape() : ns(20.0f), reflection(0.0f), texture(nullptr), has_texture(false) {
+    Shape() : ns(20.0f), reflection(0.0f), refraction(0.0f), ior(1.0f), texture(nullptr), has_texture(false) {
         for(int i = 0; i < 3; i++) {
             position[i] = 0.0f;
             color[i] = 0.0f;
