@@ -150,6 +150,48 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             final_color[1] = (1.0f - ref) * final_color[1] + ref * reflected_color[1];
             final_color[2] = (1.0f - ref) * final_color[2] + ref * reflected_color[2];
         }
+
+        // recursive refraction
+        if(closest_shape->refraction > 0) {
+            float n1 = 1.0f;
+            float n2 = closest_shape->ior;
+            float current_N[3] = {N[0], N[1], N[2]};
+
+            float cos_i = v3_dot_product(Rd, N);
+
+            // check for entering/exiting a surface
+            if(cos_i < 0) {
+                std::swap(n1, n2);
+                current_N[0] = -N[0];
+                current_N[1] = -N[1];
+                current_N[2] = -N[2];
+            }
+            else {
+                cos_i = -cos_i;
+            }
+
+            float eta = n1 / n2;
+            float k = 1.0f - eta * eta * (1.0f - cos_i * cos_i);
+
+            if(k >= 0) {
+                float refract_Rd[3];
+                refract_Rd[0] = eta * Rd[0] - (eta * cos_i + sqrtf(k)) * current_N[0];
+                refract_Rd[1] = eta * Rd[1] - (eta * cos_i + sqrtf(k)) * current_N[1];
+                refract_Rd[2] = eta * Rd[2] - (eta * cos_i + sqrtf(k)) * current_N[2];
+                v3_normalize(refract_Rd, refract_Rd);
+
+                // offsetting origin to avoid self-intersection
+                float refract_Ro[3] = {P[0] - current_N[0] * 0.001f, P[1] - current_N[1] * 0.001f, P[2] - current_N[2] * 0.001f};
+
+                float refracted_color[3] = {0.0f, 0.0f, 0.0f};
+                ray_trace(refract_Ro, refract_Rd, shapes, lights, depth + 1, refracted_color);
+
+                float trans = closest_shape->refraction;
+                final_color[0] = (1.0f - trans) * final_color[0] + trans * refracted_color[0];
+                final_color[1] = (1.0f - trans) * final_color[1] + trans * refracted_color[1];
+                final_color[2] = (1.0f - trans) * final_color[2] + trans * refracted_color[2];
+            }
+        }
     }
     else {
         final_color[0] = 0.0f;
