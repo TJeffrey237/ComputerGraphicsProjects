@@ -40,11 +40,13 @@ class Sphere : public Shape {
 public:
     float radius;
 
-    Sphere(float* pos, float r, float* col, float* spec, float shiny, float ref) {
+    Sphere(float* pos, float r, float* col, float* spec, float shiny, float ref, float refr, float i) {
         radius = r;
         ns = shiny;
         reflection = ref;
-        
+        refraction = refr;
+        ior = i;
+
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
             color[i] = col[i];
@@ -97,10 +99,12 @@ class Plane : public Shape {
 public:
     float normal[3];
 
-    Plane(float* pos, float* norm, float* col, float* spec, float shiny, float ref) {
+    Plane(float* pos, float* norm, float* col, float* spec, float shiny, float ref, float refr, float i) {
         v3_normalize(normal, norm);
         ns = shiny;
         reflection = ref;
+        refraction = refr;
+        ior = i;
 
         for(int i = 0; i < 3; i++) {
             position[i] = pos[i];
