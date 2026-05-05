@@ -31,6 +31,7 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
         closest_shape->getNormal(P, N);
 
         float diffuse_color[3];
+        float accum_color[3] = {0.0f, 0.0f, 0.0f};
 
         // tex mapping
         if(closest_shape->has_texture && closest_shape->texture != nullptr) {
@@ -128,9 +129,9 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             }
 
             // sum all of the light contributions
-            final_color[0] += rad_attn * ang_attn * illumination[0];
-            final_color[1] += rad_attn * ang_attn * illumination[1];
-            final_color[2] += rad_attn * ang_attn * illumination[2];
+            accum_color[0] += rad_attn * ang_attn * illumination[0];
+            accum_color[1] += rad_attn * ang_attn * illumination[1];
+            accum_color[2] += rad_attn * ang_attn * illumination[2];
         }
 
         // this is where we do recursive reflection
@@ -146,9 +147,9 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             ray_trace(reflect_Ro, reflect_Rd, shapes, lights, depth + 1, reflected_color);
 
             float ref = closest_shape->reflection;
-            final_color[0] = (1.0f - ref) * final_color[0] + ref * reflected_color[0];
-            final_color[1] = (1.0f - ref) * final_color[1] + ref * reflected_color[1];
-            final_color[2] = (1.0f - ref) * final_color[2] + ref * reflected_color[2];
+            accum_color[0] = (1.0f - ref) * accum_color[0] + ref * reflected_color[0];
+            accum_color[1] = (1.0f - ref) * accum_color[1] + ref * reflected_color[1];
+            accum_color[2] = (1.0f - ref) * accum_color[2] + ref * reflected_color[2];
         }
 
         // recursive refraction
@@ -156,6 +157,7 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
             float n1 = 1.0f;
             float n2 = closest_shape->ior;
             float current_N[3] = {N[0], N[1], N[2]};
+            float trans = closest_shape->refraction;
 
             float cos_i = v3_dot_product(Rd, N);
 
@@ -175,25 +177,44 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
 
             if(k >= 0) {
                 float refract_Rd[3];
-                refract_Rd[0] = eta * Rd[0] - (eta * cos_i + sqrtf(k)) * current_N[0];
-                refract_Rd[1] = eta * Rd[1] - (eta * cos_i + sqrtf(k)) * current_N[1];
-                refract_Rd[2] = eta * Rd[2] - (eta * cos_i + sqrtf(k)) * current_N[2];
+                refract_Rd[0] = eta * Rd[0] + (eta * cos_i + sqrtf(k)) * current_N[0];
+                refract_Rd[1] = eta * Rd[1] + (eta * cos_i + sqrtf(k)) * current_N[1];
+                refract_Rd[2] = eta * Rd[2] + (eta * cos_i + sqrtf(k)) * current_N[2];
                 v3_normalize(refract_Rd, refract_Rd);
 
-                // offsetting origin to avoid self-intersection
-                float refract_Ro[3] = {P[0] - current_N[0] * 0.001f, 
-                                       P[1] - current_N[1] * 0.001f,
-                                       P[2] - current_N[2] * 0.001f};
+                // offsetting origin along refracted ray direction to avoid self-intersection
+                float refract_Ro[3] = {P[0] + refract_Rd[0] * 0.001f,
+                                       P[1] + refract_Rd[1] * 0.001f,
+                                       P[2] + refract_Rd[2] * 0.001f};
 
                 float refracted_color[3] = {0.0f, 0.0f, 0.0f};
                 ray_trace(refract_Ro, refract_Rd, shapes, lights, depth + 1, refracted_color);
 
-                float trans = closest_shape->refraction;
-                final_color[0] = (1.0f - trans) * final_color[0] + trans * refracted_color[0];
-                final_color[1] = (1.0f - trans) * final_color[1] + trans * refracted_color[1];
-                final_color[2] = (1.0f - trans) * final_color[2] + trans * refracted_color[2];
+                accum_color[0] = (1.0f - trans) * accum_color[0] + trans * refracted_color[0];
+                accum_color[1] = (1.0f - trans) * accum_color[1] + trans * refracted_color[1];
+                accum_color[2] = (1.0f - trans) * accum_color[2] + trans * refracted_color[2];
+            } else {
+                // total internal reflection
+                float reflect_Rd[3];
+                v3_reflect(reflect_Rd, Rd, current_N);
+                v3_normalize(reflect_Rd, reflect_Rd);
+
+                float reflect_Ro[3] = {P[0] + reflect_Rd[0] * 0.001f,
+                                       P[1] + reflect_Rd[1] * 0.001f,
+                                       P[2] + reflect_Rd[2] * 0.001f};
+
+                float reflected_color[3] = {0.0f, 0.0f, 0.0f};
+                ray_trace(reflect_Ro, reflect_Rd, shapes, lights, depth + 1, reflected_color);
+
+                accum_color[0] = (1.0f - trans) * accum_color[0] + trans * reflected_color[0];
+                accum_color[1] = (1.0f - trans) * accum_color[1] + trans * reflected_color[1];
+                accum_color[2] = (1.0f - trans) * accum_color[2] + trans * reflected_color[2];
             }
         }
+
+        final_color[0] = accum_color[0];
+        final_color[1] = accum_color[1];
+        final_color[2] = accum_color[2];
     }
     else {
         final_color[0] = 0.0f;

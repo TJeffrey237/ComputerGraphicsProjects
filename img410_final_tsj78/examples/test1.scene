@@ -1,7 +1,7 @@
 img410scene
 camera width: 2 height: 2;
 
-sphere refraction: 1.0 ior: 1.5 reflection: 0.2 c_diff: 0 0 0 c_spec: 1 1 1 position: 0 1 -5 radius: 2;
+sphere refraction: 1.0 ior: 1.5 reflection: 0.2 c_diff: 20 0 0 c_spec: 1 1 1 position: 0 1 -5 radius: 2;
 
 plane c_diff: 0.2 0.5 0.8 position: 0 -1 0 normal: 0 1 0;
 
