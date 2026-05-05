@@ -177,9 +177,9 @@ void ray_trace(float* Ro, float* Rd,  const std::vector<Shape*>& shapes, const s
 
             if(k >= 0) {
                 float refract_Rd[3];
-                refract_Rd[0] = eta * Rd[0] + (eta * cos_i + sqrtf(k)) * current_N[0];
-                refract_Rd[1] = eta * Rd[1] + (eta * cos_i + sqrtf(k)) * current_N[1];
-                refract_Rd[2] = eta * Rd[2] + (eta * cos_i + sqrtf(k)) * current_N[2];
+                refract_Rd[0] = eta * Rd[0] + (eta * cos_i - sqrtf(k)) * current_N[0];
+                refract_Rd[1] = eta * Rd[1] + (eta * cos_i - sqrtf(k)) * current_N[1];
+                refract_Rd[2] = eta * Rd[2] + (eta * cos_i - sqrtf(k)) * current_N[2];
                 v3_normalize(refract_Rd, refract_Rd);
 
                 // offsetting origin along refracted ray direction to avoid self-intersection
